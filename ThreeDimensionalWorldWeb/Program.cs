@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using NewProducts.SeedIdentity;
 using ThreeDimensionalWorld.DataAccess.Data;
+using ThreeDimensionalWorld.DataAccess.Repository.IRepository;
+using ThreeDimensionalWorld.DataAccess.Repository;
 using ThreeDimensionalWorld.Models;
 using ThreeDimensionalWorld.Utility;
 using ThreeDimensionalWorldWeb.Configuration;
@@ -15,8 +17,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-/*builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();*/
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -31,6 +31,9 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<AppRolesAndUsersSeeder>();
 
 builder.Services.AddHostedService<SeedDataService>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 //May be
 builder.Services.AddDirectoryBrowser();
@@ -58,7 +61,7 @@ app.UseAuthorization();
 
 
 var fileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "3dModels"));
-var requestPath = "/3dModels";
+//var requestPath = "/3dModels";
 
 /*// Enable displaying browser links.
 app.UseStaticFiles(new StaticFileOptions

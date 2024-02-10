@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThreeDimensionalWorld.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using ThreeDimensionalWorld.DataAccess.Data;
 namespace ThreeDimensionalWorld.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240207144206_AddUserToCart")]
+    partial class AddUserToCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,19 +25,19 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MaterialMaterialColor", b =>
+            modelBuilder.Entity("CartProduct", b =>
                 {
-                    b.Property<int>("ColorsId")
+                    b.Property<int>("CartsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaterialsId")
+                    b.Property<int>("ProductsId")
                         .HasColumnType("int");
 
-                    b.HasKey("ColorsId", "MaterialsId");
+                    b.HasKey("CartsId", "ProductsId");
 
-                    b.HasIndex("MaterialsId");
+                    b.HasIndex("ProductsId");
 
-                    b.ToTable("MaterialMaterialColor");
+                    b.ToTable("CartProduct");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -241,6 +244,25 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Carts");
+                });
+
             modelBuilder.Entity("ThreeDimensionalWorld.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -259,34 +281,10 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.Material", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("PriceIncrease")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Materials");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.MaterialColor", b =>
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.File3D", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -298,12 +296,29 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("SizeX")
+                        .HasColumnType("float");
+
+                    b.Property<double>("SizeY")
+                        .HasColumnType("float");
+
+                    b.Property<double>("SizeZ")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
-                    b.ToTable("MaterialColors");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("File3Ds");
                 });
 
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.Order", b =>
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.ImageFile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -311,35 +326,12 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderItemId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.OrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Order")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateOrdered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -348,7 +340,7 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("ThreeDimensionalWorld.Models.Product", b =>
@@ -359,9 +351,6 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("BasePrice")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -371,6 +360,9 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Title")
@@ -385,123 +377,17 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductFile3D", b =>
+            modelBuilder.Entity("CartProduct", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("ProportionX")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ProportionY")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ProportionZ")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductFiles3D");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductImageFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductImages");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ShoppingCarts");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ShoppingCartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("MaterialId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ShoppingCartId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MaterialId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ShoppingCartId");
-
-                    b.ToTable("ShoppingCartItems");
-                });
-
-            modelBuilder.Entity("MaterialMaterialColor", b =>
-                {
-                    b.HasOne("ThreeDimensionalWorld.Models.MaterialColor", null)
+                    b.HasOne("ThreeDimensionalWorld.Models.Cart", null)
                         .WithMany()
-                        .HasForeignKey("ColorsId")
+                        .HasForeignKey("CartsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ThreeDimensionalWorld.Models.Material", null)
+                    b.HasOne("ThreeDimensionalWorld.Models.Product", null)
                         .WithMany()
-                        .HasForeignKey("MaterialsId")
+                        .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -557,29 +443,32 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.Order", b =>
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.Cart", b =>
                 {
-                    b.HasOne("ThreeDimensionalWorld.Models.OrderItem", "OrderItem")
-                        .WithMany()
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ThreeDimensionalWorld.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("ThreeDimensionalWorld.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("OrderItem");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.OrderItem", b =>
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.File3D", b =>
                 {
                     b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("File3Ds")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.ImageFile", b =>
+                {
+                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
+                        .WithMany("Images")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -598,62 +487,6 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductFile3D", b =>
-                {
-                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
-                        .WithMany("File3Ds")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductImageFile", b =>
-                {
-                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
-                        .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ShoppingCart", b =>
-                {
-                    b.HasOne("ThreeDimensionalWorld.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ShoppingCartItem", b =>
-                {
-                    b.HasOne("ThreeDimensionalWorld.Models.Material", "Material")
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
-                        .WithMany("ShoppingCartItems")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ThreeDimensionalWorld.Models.ShoppingCart", null)
-                        .WithMany("ShoppingCartItems")
-                        .HasForeignKey("ShoppingCartId");
-
-                    b.Navigation("Material");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("ThreeDimensionalWorld.Models.Category", b =>
                 {
                     b.Navigation("Products");
@@ -664,13 +497,6 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                     b.Navigation("File3Ds");
 
                     b.Navigation("Images");
-
-                    b.Navigation("ShoppingCartItems");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ShoppingCart", b =>
-                {
-                    b.Navigation("ShoppingCartItems");
                 });
 #pragma warning restore 612, 618
         }

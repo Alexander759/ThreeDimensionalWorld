@@ -13,16 +13,5 @@ namespace ThreeDimensionalWorld.Models
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
-
-        public int? CartId { get; set; }
-
-        [ForeignKey("CartId")]
-        public Cart? Cart { get; set; }
-
-        public void InitializeCart()
-        {
-            Cart = new Cart { UserId = this.Id };
-        }
-
     }
 }

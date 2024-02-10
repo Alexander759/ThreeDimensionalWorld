@@ -65,21 +65,17 @@ namespace ThreeDimensionalWorldWeb.Configuration
                     Email = defaultEmail
                 };
 
-
-                if(defaultRole == AppConfiguration.CustomerRole)
-                {
-                    Cart cart = new Cart() { UserId = user.Id };
-
-                    _context.Add(cart);
-                    await _context.SaveChangesAsync();
-
-                    user.CartId = cart.Id;
-                    user.Cart = cart;
-                }
-
                 await _userManager.CreateAsync(user, defaultPassword);
 
                 await _userManager.AddToRoleAsync(user, defaultRole);
+
+                if (defaultRole == AppConfiguration.CustomerRole)
+                {
+                    ShoppingCart cart = new ShoppingCart() { UserId = user.Id };
+
+                    await _context.ShoppingCarts.AddAsync(cart);
+                    await _context.SaveChangesAsync();
+                }
 
             }
         }

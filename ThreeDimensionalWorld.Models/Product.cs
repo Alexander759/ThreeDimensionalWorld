@@ -22,15 +22,20 @@ namespace ThreeDimensionalWorld.Models
         public required string Description { get; set; }
         
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal Price { get; set; }
+        public decimal BasePrice { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")]
         public double Discount { get; set; }
-        
-        public IEnumerable<ImageFile> Images { get; set; } = new List<ImageFile>();
 
-        public IEnumerable<File3D> File3Ds { get; set; } = new List<File3D>();
+        public int CategoryId { get; set; }
 
-        public IEnumerable<Cart> Carts { get; set; } = new List<Cart>();
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; } = null!;
+
+        public IEnumerable<ProductImageFile> Images { get; set; } = new List<ProductImageFile>();
+
+        public IEnumerable<ProductFile3D> File3Ds { get; set; } = new List<ProductFile3D>();
+
+        public IEnumerable<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();
     }
 }

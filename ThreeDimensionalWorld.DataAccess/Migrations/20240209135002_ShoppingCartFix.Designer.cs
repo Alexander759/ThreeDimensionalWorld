@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThreeDimensionalWorld.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using ThreeDimensionalWorld.DataAccess.Data;
 namespace ThreeDimensionalWorld.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240209135002_ShoppingCartFix")]
+    partial class ShoppingCartFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,6 +265,65 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.File3D", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("ProportionX")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ProportionY")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ProportionZ")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("File3Ds");
+                });
+
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.ImageFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("ThreeDimensionalWorld.Models.Material", b =>
                 {
                     b.Property<int>("Id")
@@ -385,65 +447,6 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductFile3D", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("ProportionX")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ProportionY")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ProportionZ")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductFiles3D");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductImageFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductImages");
-                });
-
             modelBuilder.Entity("ThreeDimensionalWorld.Models.ShoppingCart", b =>
                 {
                     b.Property<int>("Id")
@@ -488,7 +491,7 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.ToTable("ShoppingCartItems");
+                    b.ToTable("shoppingCartItems");
                 });
 
             modelBuilder.Entity("MaterialMaterialColor", b =>
@@ -557,6 +560,28 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.File3D", b =>
+                {
+                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
+                        .WithMany("File3Ds")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ThreeDimensionalWorld.Models.ImageFile", b =>
+                {
+                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ThreeDimensionalWorld.Models.Order", b =>
                 {
                     b.HasOne("ThreeDimensionalWorld.Models.OrderItem", "OrderItem")
@@ -596,28 +621,6 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductFile3D", b =>
-                {
-                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
-                        .WithMany("File3Ds")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ThreeDimensionalWorld.Models.ProductImageFile", b =>
-                {
-                    b.HasOne("ThreeDimensionalWorld.Models.Product", "Product")
-                        .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ThreeDimensionalWorld.Models.ShoppingCart", b =>
