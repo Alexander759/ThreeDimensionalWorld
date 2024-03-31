@@ -41,7 +41,8 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
+            [Display(Name ="Имейл")]
             [EmailAddress]
             public string Email { get; set; }
 
@@ -49,8 +50,9 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
+            [StringLength(100, ErrorMessage = "Полето {0} трябва да е поне {2} и максимум {1} символа.", MinimumLength = 6)]
+            [Display(Name ="Парола")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -59,8 +61,8 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Потвърждение на паролата")]
+            [Compare("NewPassword", ErrorMessage = "Новата парола и повторението ѝ не съвпадат.")]
             public string ConfirmPassword { get; set; }
 
             /// <summary>
@@ -69,7 +71,6 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             public string Code { get; set; }
-
         }
 
         public IActionResult OnGet(string code = null)

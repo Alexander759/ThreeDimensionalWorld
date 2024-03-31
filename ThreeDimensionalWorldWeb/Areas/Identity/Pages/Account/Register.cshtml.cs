@@ -18,7 +18,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using ThreeDimensionalWorld.DataAccess.Repository;
+using ThreeDimensionalWorld.DataAccess.Repository.IRepository;
 using ThreeDimensionalWorld.Models;
+using ThreeDimensionalWorldWeb.Configuration;
 
 namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
 {
@@ -30,13 +33,15 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +49,7 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -75,19 +81,19 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "Имейл")]
             public string Email { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Парола")]
             public string Password { get; set; }
 
             /// <summary>
@@ -95,9 +101,26 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Потвърдете паролата")]
+            [Compare("Password", ErrorMessage = "Новата парола и повторението ѝ не съвпадат.")]
             public string ConfirmPassword { get; set; }
+
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
+            [Display(Name = "Първо име")]
+            public string FirstName { get; set; }
+
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
+            [Display(Name = "Фамилно име")]
+            public string LastName { get; set; }
+
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
+            [Display(Name = "Потребителско име")]
+            public string Username { get; set; }
+
+            [Required(ErrorMessage = "Полето {0} е задължително!")]
+            [Display(Name = "Телефонен номер")]
+            [Phone]
+            public string PhoneNumber { get; set; }
         }
 
 
@@ -111,12 +134,26 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+
+            if ((await _userManager.FindByEmailAsync(Input.Email)) != null)
+            {
+                ModelState.AddModelError("Input.Email", $"{Input.Email} е вече използван");
+            }
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                if (!string.IsNullOrEmpty(Input.PhoneNumber))
+                {
+                  user.PhoneNumber = Input.PhoneNumber;
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -124,6 +161,12 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
+                    _unitOfWork.ShoppingCartRepository.Add(new ShoppingCart() { UserId = userId });
+                    _unitOfWork.Save();
+
+                    await _userManager.AddToRoleAsync(user, AppConfiguration.CustomerRole);
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

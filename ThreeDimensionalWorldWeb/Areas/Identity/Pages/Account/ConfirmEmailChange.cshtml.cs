@@ -49,7 +49,7 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             var result = await _userManager.ChangeEmailAsync(user, email, code);
             if (!result.Succeeded)
             {
-                StatusMessage = "Error changing email.";
+                StatusMessage = "Грешка при смяната на имейла.";
                 return Page();
             }
 
@@ -58,12 +58,12 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             var setUserNameResult = await _userManager.SetUserNameAsync(user, email);
             if (!setUserNameResult.Succeeded)
             {
-                StatusMessage = "Error changing user name.";
+                StatusMessage = "Грешка при смяната на имейла.";
                 return Page();
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Thank you for confirming your email change.";
+            StatusMessage = "Благодарим Ви, за подвърждаването на промяната на имейла.";
             return Page();
         }
     }

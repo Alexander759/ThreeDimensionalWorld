@@ -18,8 +18,7 @@ namespace ThreeDimensionalWorld.DataAccess.Repository
             _db = db;
 
             ProductRepository = new ProductRepository(_db);
-            ProductImageFileRepository = new ProductImageFileRepository(_db);
-            ProductFile3DRepository = new ProductFile3DRepository(_db);
+            ProductFileRepository = new ProductFileRepository(_db);
 
             CategoryRepository = new CategoryRepository(_db);
 
@@ -31,11 +30,14 @@ namespace ThreeDimensionalWorld.DataAccess.Repository
 
             OrderItemRepository = new OrderItemRepository(_db);
             OrderRepository = new OrderRepository(_db);
+
+            ApplicationUserRepository = new ApplicationUserRepository(_db);
+
+            AddressRepository = new AddressRepository(_db);
         }
 
         public IRepository<Product> ProductRepository { get; set; }
-        public IRepository<ProductImageFile> ProductImageFileRepository { get; set; }
-        public IRepository<ProductFile3D> ProductFile3DRepository { get; set; }
+        public IRepository<ProductFile> ProductFileRepository { get; set; }
         
         public IRepository<Category> CategoryRepository { get; set; }
         
@@ -47,6 +49,10 @@ namespace ThreeDimensionalWorld.DataAccess.Repository
         
         public IRepository<OrderItem> OrderItemRepository { get; set; }
         public IRepository<Order> OrderRepository { get; set; }
+
+        public IRepository<ApplicationUser> ApplicationUserRepository { get; set; }
+        
+        public IRepository<Address> AddressRepository { get; set; }
 
         public void Save()
         {

@@ -46,7 +46,8 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [EmailAddress]
+            [Display(Name ="Имейл")]
+            [EmailAddress(ErrorMessage = "Моля въведете валиден имейл.")]
             public string Email { get; set; }
         }
 
@@ -73,8 +74,8 @@ namespace ThreeDimensionalWorldWeb.Areas.Identity.Pages.Account
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    "Нулиране на парола",
+                    $"Моля нулирайте паролата си като <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>кликнете тук</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

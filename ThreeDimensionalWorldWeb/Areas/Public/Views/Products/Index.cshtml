@@ -1,0 +1,113 @@
+﻿@using ThreeDimensionalWorld.Models
+@model IEnumerable<Product>
+
+
+@{
+    ViewData["Title"] = "Продукти";
+    List<string> allowed3dFormats = (List<string>)ViewData["Allowed3dFormats"]!;
+    Material defaultMaterial = (Material)ViewData["DefaultMaterial"]!;
+    MaterialColor defaultMaterialColor = defaultMaterial.Colors.First();
+
+}
+
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <h1>@ViewData["Title"]</h1>
+    <hr class="w-100" />
+</div>
+
+
+<div class="container" >
+    <div class="row mt-1 mb-3 col-md-6">
+        <form class="d-flex gap-2" asp-action="Index" method="get">
+            @if(ViewBag.CategoryId != null)
+            {
+                <input hidden name="categoryId" value="@ViewBag.CategoryId" />
+            }
+
+            <input class="form-control" name="search" value="@ViewBag.Search" />
+            <input class="btn btn-primary" type="submit" value="Търсене" />
+            <a class="align-content-center btn btn-secondary" asp-action="Index" asp-route-categoryId="@ViewBag.CategoryId">Изчисти</a>
+        </form>
+    </div>
+
+    <div class="row">
+
+        @foreach (var item in Model)
+        {
+            ProductFile productFile = item.Files.ToList().FirstOrDefault(f => allowed3dFormats.Contains(System.IO.Path.GetExtension(f.Name).ToLower()))!;
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-3d-holder">
+                        <div class="stl-container" data-3d-src="/3dModels/@productFile!.Name" style="width: 100%; aspect-ratio: 3/2;" data-3d-color="@defaultMaterialColor.ColorCode"></div>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Description</p>
+                        
+                        <div class="pb-2">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary mr-2">Вижте повече</a>
+                        </div>
+                        <div>
+                            <button class="btn btn-success cart-btn"
+                                    data-default-material-id="@defaultMaterial.Id"
+                                    data-default-color-id="@defaultMaterialColor.Id"
+                                    data-product-id="@item.Id">
+                                    Добави в количка
+                            </button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/stlDisplay.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded",  () => {
+            const btnsAddToCart = Array.from(document.querySelectorAll(".cart-btn"))
+            btnsAddToCart.forEach(b => {
+                b.addEventListener("click", () => {
+
+                    const dto = {
+                        MaterialId: parseInt(b.getAttribute("data-default-material-id")),
+                        ColorId: parseInt(b.getAttribute("data-default-color-id")),
+                        ProductId: parseInt(b.getAttribute("data-product-id")),
+                        Quantity: 1
+                    };
+
+                    $.ajax({
+                        url: "/api/ShoppingCarts/AddToCart",
+                        contentType: "application/json",
+                        type: "POST",
+                        data: JSON.stringify(dto),
+                        success: function (data) {
+                        
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert("Грешка!")
+                        }
+                    });
+                })
+            })
+        })
+    </script>
+}
+
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="pagination">
+        <ul>
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="@(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a href="@Url.Action("Index", new { page = i, search = ViewBag.Search, categoryId = ViewBag.CategoryId })">@i</a>
+                </li>
+            }
+        </ul>
+    </div>
+}

@@ -14,6 +14,8 @@ namespace ThreeDimensionalWorld.Models
         [Key]
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Полето {0} е задължително!")]
+        [Display(Name = "Потребител")]
         public required string UserId { get; set; }
 
         [ForeignKey("UserId")]

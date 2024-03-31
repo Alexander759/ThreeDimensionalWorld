@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ThreeDimensionalWorld.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddressId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOrdered)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfReceiving)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsReceived)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @item.Address?.Street, @item.Address?.PopulatedPlace, @item.Address?.Country
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOrdered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfReceiving)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsReceived)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id=item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/datatables.js"></script>
+}

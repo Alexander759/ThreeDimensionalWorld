@@ -11,19 +11,28 @@ namespace ThreeDimensionalWorld.Utility
 {
     public class EmailSender : IEmailSender
     {
+        private readonly string _smtpServer;
+        private readonly int _port;
+        private readonly string _mail;
+        private readonly string _password;
+
+        public EmailSender(string smtpServer, int port, string mail, string password)
+        {
+            _smtpServer = smtpServer;
+            _port = port;
+            _mail = mail;
+            _password = password;
+        }
+
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            string mail = "aleks.asenov2005@gmail.com";
-            string pass = "jvuu gxwf mcym pxwl";
-
-            var client = new SmtpClient("smtp.gmail.com", 587)
+            var client = new SmtpClient(_smtpServer, _port)
             {
                 EnableSsl = true,
-                Credentials = new NetworkCredential(mail, pass),
+                Credentials = new NetworkCredential(_mail, _password),
             };
 
-
-            return client.SendMailAsync(new MailMessage(mail, email, subject, htmlMessage) { IsBodyHtml = true });
+            return client.SendMailAsync(new MailMessage(_mail, email, subject, htmlMessage) { IsBodyHtml = true });
         }
     }
 }

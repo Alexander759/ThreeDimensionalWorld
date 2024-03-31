@@ -9,6 +9,10 @@ using ThreeDimensionalWorld.DataAccess.Repository;
 using ThreeDimensionalWorld.Models;
 using ThreeDimensionalWorld.Utility;
 using ThreeDimensionalWorldWeb.Configuration;
+using System.Globalization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +30,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<IEmailSender, EmailSender>();
+EmailSettings emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>()!;
+
+builder.Services.AddScoped<IEmailSender>(sp =>
+        new EmailSender(emailSettings.SmtpServer, emailSettings.Port, emailSettings.Mail, emailSettings.Password));
 
 builder.Services.AddScoped<AppRolesAndUsersSeeder>();
 
@@ -35,10 +42,18 @@ builder.Services.AddHostedService<SeedDataService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-//May be
-builder.Services.AddDirectoryBrowser();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = $"/Identity/Account/Login";
+    options.LogoutPath = $"/Identity/Account/Logout";
+    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
 var app = builder.Build();
+
+AppDbinitializer.SeedAsync(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -59,33 +74,15 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+CultureInfo culture = new CultureInfo("bg-BG");
+Thread.CurrentThread.CurrentCulture = culture;
+Thread.CurrentThread.CurrentUICulture = culture;
 
-var fileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "3dModels"));
-//var requestPath = "/3dModels";
-
-/*// Enable displaying browser links.
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = fileProvider,
-    RequestPath = requestPath
-});
-
-app.UseDirectoryBrowser(new DirectoryBrowserOptions
-{
-    FileProvider = fileProvider,
-    Reques*//*tPath = requestPath
-});
-*/
-FileServerOptions options = new FileServerOptions();
-options.DefaultFilesOptions.DefaultFileNames.Clear();
-options.DefaultFilesOptions.DefaultFileNames.Add("3dModels/3d.glb");
-options.EnableDirectoryBrowsing = true;
-app.UseFileServer(options);
-/*app.UseDefaultFiles();*/
+app.UseRequestLocalization("bg-BG");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area=Public}/{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();

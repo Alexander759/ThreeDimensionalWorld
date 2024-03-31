@@ -2,7 +2,6 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
-    ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
 <h3>@ViewData["Title"]</h3>
@@ -16,11 +15,34 @@
                 <label asp-for="Username" class="form-label"></label>
             </div>
             <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true" placeholder="First Name" />
+                <label asp-for="Input.FirstName"></label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="family-name" aria-required="true" placeholder="Last Name" />
+                <label asp-for="Input.LastName"></label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
                 <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Запази</button>
+            <div class="row mt-2">
+                <div class="col-md-4 mb-2">
+                    <a asp-page="ChangePassword" class="btn btn-dark h-100 d-flex justify-content-center align-items-center">Промяна на парола</a>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <a asp-page="Email" class="btn btn-info h-100 d-flex justify-content-center align-items-center">Промяна на имейл</a>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <a asp-page="DeletePersonalData" class="btn btn-danger h-100 d-flex justify-content-center align-items-center">Изтриване на акаунт</a>
+                </div>
+            </div>
         </form>
     </div>
 </div>

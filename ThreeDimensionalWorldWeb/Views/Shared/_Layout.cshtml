@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using ThreeDimensionalWorldWeb.Configuration
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,31 +8,72 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ThreeDimensionalWorldWeb.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css" />
+    <link rel="icon" type="image/x-icon" href="~/logo.png">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ThreeDimensionalWorldWeb</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-area="Public" asp-controller="Home" asp-action="Index">
+                    <img style="max-height: 2em;" src="~/logo.png" alt="logo" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarColor03">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="Public" asp-controller="Home" asp-action="Index">Начало</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="Public" asp-controller="Categories" asp-action="Index">Категории</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Public" asp-controller="Products" asp-action="Index">Продукти</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Public" asp-controller="Home" asp-action="AboutUs">За нас</a>
+                        </li>
+
+                        @if (User.IsInRole(AppConfiguration.AdminRole))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Съдържание</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index">Категории</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Products" asp-action="Index">Продукти</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Materials" asp-action="Index">Материали</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="MaterialColors" asp-action="Index">Цветове</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Orders" asp-action="Index">Поръчки</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ApplicationUsers" asp-action="Index">Потребители</a>
+                                </div>
+                            </li>
+                        }
+
+                        @if (User.IsInRole(AppConfiguration.CustomerRole))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Customer" asp-controller="Orders" asp-action="Index">Поръчки</a>
+                            </li>
+
+                            <li class="nav-item" style="margin-left: auto;">
+                                <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCarts" asp-action="Index">
+                                    <i class="bi bi-cart2"></i>
+                                </a>
+                            </li>
+                        }
                     </ul>
+                        
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -39,108 +81,20 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - ThreeDimensionalWorldWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - Триизмерен свят - <a asp-area="Public" asp-controller="Home" asp-action="Privacy">Поверителност</a>
         </div>
     </footer>
 
 
-    <div id="stl-container"></div>
-
-
-
-    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://github.com/mrdoob/three.js/tree/master/examples/js/loaders/STLLoader.js"></script>
- *@
-@*     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    
-    <script>
-        // Scene
-        var scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xffffff);
-
-        // Camera
-        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 100;
-
-        // Renderer
-        var renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('stl-container').appendChild(renderer.domElement);
-
-        // Handle window resize
-        window.addEventListener('resize', function () {
-            var width = window.innerWidth;
-            var height = window.innerHeight;
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-        });
-    </script>
-
-    <script>
-        // Ambient light
-        var ambientLight = new THREE.AmbientLight(0xffffff);
-        scene.add(ambientLight);
-
-        // Directional light
-        var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(0, 1, 0);
-        directionalLight.position.set(camera.position.x, camera.position.y, camera.position.z);
-        scene.add(directionalLight);
-    </script>
-
-    <script>
-        // STL Loader
-        var loader = new THREE.STLLoader();
-
-        // Load your STL file
-        loader.load('/3dModels/duck.stl', function (geometry) {
-            var material = new THREE.MeshPhongMaterial({ color: 0x555555, specular: 0x111111, shininess: 200 });
-            var mesh = new THREE.Mesh(geometry, material);
-
-            scene.add(mesh);
-
-            // Ensure the model is centered
-            geometry.center();
-
-            // Update the camera to fit the object
-            var boundingBox = new THREE.Box3().setFromObject(mesh);
-            var center = boundingBox.getCenter();
-            var size = boundingBox.getSize();
-            var maxDim = Math.max(size.x, size.y, size.z);
-            var fov = camera.fov * (Math.PI / 180);
-            var cameraZ = Math.abs(maxDim / 4 * Math.tan(fov * 2));
-
-            camera.position.z = cameraZ;
-
-            // Update the rendering
-            animate();
-        });
-
-        // Animation loop
-        function animate() {
-            directionalLight.position.copy(camera.position);
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
-        }
-    </script>
-
-
-    <script>
-        // Add OrbitControls
-        var controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.addEventListener('change', renderer);
-        controls.addEventListener('change', () => {
-            directionalLight.position.set(camera.position.x, camera.position.y, camera.position.z);
-        });
-
-    </script> *@
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+   
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
+   
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

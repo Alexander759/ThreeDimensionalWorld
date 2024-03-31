@@ -13,7 +13,7 @@ namespace ThreeDimensionalWorld.DataAccess.Repository
 {
     public abstract class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _db;
+        internal readonly ApplicationDbContext _db;
         internal DbSet<T> dbSet;
 
         public Repository(ApplicationDbContext db)
@@ -54,6 +54,27 @@ namespace ThreeDimensionalWorld.DataAccess.Repository
         public virtual IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            return query.ToList();
+        }
+
+        public virtual IEnumerable<T> GetAll(Expression<Func<T,bool>>? filter, string? includeProperties = null)
+        {
+            IQueryable<T> query = dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
 
             if (!string.IsNullOrEmpty(includeProperties))
             {
