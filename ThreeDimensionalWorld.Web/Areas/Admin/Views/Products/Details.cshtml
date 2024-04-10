@@ -1,0 +1,140 @@
+﻿@using ThreeDimensionalWorld.Models
+@using ThreeDimensionalWorld.Utility
+@model ThreeDimensionalWorld.Models.Product
+
+@{
+    ViewData["Title"] = "Детайли";
+
+    string displaySlideShow = "display: none";
+    if (Model != null && Model.Files != null)
+    {
+        displaySlideShow = "display: block;";
+    }
+}
+
+<h1>Детайли</h1>
+
+<div>
+    <h4>Продукт</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BasePrice)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BasePrice)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category!.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category!.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Width)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Width)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Length)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Length)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Height)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Height)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AttributionLink)
+        </dt>
+        <dd class="col-sm-10">
+            <a target="_blank" href="@Model?.AttributionLink">@Model?.AttributionLink</a>
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Files)
+        </dt>
+        <dd class="col-sm-10">
+            <div class="slideshow" style="width: 50%; aspect-ratio: 2/1; @displaySlideShow">
+                <!-- Slideshow container -->
+                <div class="slideshow-container">
+                    @if (Model != null && Model.Files != null)
+                    {
+                        foreach (ProductFile item in Model.Files)
+                        {
+
+                            if (AllowedFormats.Allowed3dFormats.Contains(System.IO.Path.GetExtension(item.Name).ToLower()))
+                            {
+                                <div class="slideshow-slides fade-slideshow">
+                                    <div class="stl-container" data-3d-src="/3dModels/@item.Name" style="width: 100%"></div>
+                                </div>
+                            }
+                            else if (AllowedFormats.AllowedImageFormats.Contains(System.IO.Path.GetExtension(item.Name).ToLower()))
+                            {
+                                <div class="slideshow-slides fade-slideshow">
+                                    <img src="~/images/@item.Name" style="width:100%">
+                                </div>
+                            }
+
+                        }
+                    }
+                    <!-- Next and previous buttons -->
+                    <a class="slideshow-btn-prev">&#10094;</a>
+                    <a class="slideshow-btn-next">&#10095;</a>
+                </div>
+                <br>
+
+                <!-- The dots/circles -->
+                <div class="slideshow-dots-container" style="text-align:center">
+                    @if (Model != null && Model.Files != null)
+                    {
+                        foreach (ProductFile item in Model.Files)
+                        {
+                            if (AllowedFormats.AllAllowedFormats.Contains(System.IO.Path.GetExtension(item.Name).ToLower()))
+                            {
+                                <span class="slideshow-dot"></span>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" class="btn btn-dark" asp-route-id="@Model?.Id"><i class="bi bi-pencil-square"></i> Редактирай</a>
+    <a asp-action="Index">Към списъка</a>
+</div>
+
+@section Scripts {
+    <script src="~/js/stlDisplay.js"></script>
+    <script src="~/js/slideshows.js"></script>
+    <script src="~/js/slideshowInput.js"></script>
+}

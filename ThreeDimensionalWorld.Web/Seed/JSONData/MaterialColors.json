@@ -1,0 +1,102 @@
+[
+  {
+    "MaterialId": 1,
+    "ColorId": 1
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 2
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 3
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 4
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 5
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 6
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 7
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 8
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 9
+  },
+  {
+    "MaterialId": 1,
+    "ColorId": 10
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 1
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 2
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 3
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 4
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 5
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 6
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 7
+  },
+  {
+    "MaterialId": 2,
+    "ColorId": 8
+  },
+  {
+    "MaterialId": 3,
+    "ColorId": 2
+  },
+  {
+    "MaterialId": 3,
+    "ColorId": 4
+  },
+  {
+    "MaterialId": 3,
+    "ColorId": 6
+  },
+  {
+    "MaterialId": 3,
+    "ColorId": 7
+  },
+  {
+    "MaterialId": 3,
+    "ColorId": 8
+  },
+  {
+    "MaterialId": 3,
+    "ColorId": 9
+  },
+  {
+    "MaterialId": 3,
+    "ColorId": 10
+  }
+]

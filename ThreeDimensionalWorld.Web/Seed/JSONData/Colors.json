@@ -1,0 +1,42 @@
+﻿[
+  {
+    "Name": "Червен",
+    "ColorCode": "#FF0000"
+  },
+  {
+    "Name": "Зелен",
+    "ColorCode": "#00FF00"
+  },
+  {
+    "Name": "Син",
+    "ColorCode": "#0000FF"
+  },
+  {
+    "Name": "Жълт",
+    "ColorCode": "#FFFF00"
+  },
+  {
+    "Name": "Оранжев",
+    "ColorCode": "#FFA500"
+  },
+  {
+    "Name": "Лилав",
+    "ColorCode": "#800080"
+  },
+  {
+    "Name": "Розов",
+    "ColorCode": "#FFC0CB"
+  },
+  {
+    "Name": "Бял",
+    "ColorCode": "#FFFFFF"
+  },
+  {
+    "Name": "Черен",
+    "ColorCode": "#383333"
+  },
+  {
+    "Name": "Кафяв",
+    "ColorCode": "#A52A2A"
+  }
+]

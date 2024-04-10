@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,8 +30,8 @@ namespace ThreeDimensionalWorld.Models
         public DateTime DateOrdered { get; set; }
 
         [Required(ErrorMessage = "Полето {0} е задължително!")]
-        [Display(Name = "Дата на пристигане")]
-        public DateTime DateOfReceiving { get; set; }
+        [Display(Name = "Дата на изпращане")]
+        public DateTime DateOfSending { get; set; }
 
         [Required(ErrorMessage = "Полето {0} е задължително!")]
         [Display(Name = "Цена за доставка")]
@@ -41,10 +42,6 @@ namespace ThreeDimensionalWorld.Models
         [Display(Name = "Цена")]
         [Column(TypeName = "decimal(18, 2)")]
         public required decimal Price { get; set; }
-
-        [Required(ErrorMessage = "Полето {0} е задължително!")]
-        [Display(Name = "Получена ли е")]
-        public bool IsReceived { get; set; }
 
         [ForeignKey("UserId")]
         public ApplicationUser? ApplicationUser { get; set; }

@@ -22,28 +22,32 @@ namespace ThreeDimensionalWorld.Models
 
         [Required(ErrorMessage = "Полето {0} е задължително!")]
         [Display(Name = "Описание")]
-        [MinLength(10, ErrorMessage = "Описанието трябва да бъде поне {1} символа.")]
+        [MinLength(100, ErrorMessage = "Описанието трябва да бъде поне {1} символа.")]
         [MaxLength(5000, ErrorMessage = "Описанието не може да бъде по-дълго от {1} символа.")]
         public required string Description { get; set; }
 
         [Required(ErrorMessage = "Полето {0} е задължително!")]
         [Display(Name = "Базова цена")]
         [Column(TypeName = "decimal(18, 2)")]
+        [Range(typeof(decimal), "0", "1000000000", ErrorMessage = "Стойността за {0} трябва да бъде между {1} ​​и {2}.")]
         public decimal BasePrice { get; set; }
-
+        
         [Required(ErrorMessage = "Полето {0} е задължително!")]
         [Display(Name = "Категория")]
         public int CategoryId { get; set; }
 
         [Required(ErrorMessage = "Полето {0} е задължително!")]
         [Display(Name = "Ширина")]
+        [Range(0.01, 2000, ErrorMessage = "Стойността за {0} трябва да бъде между {1} ​​и {2}.")]
         public double Width { get; set; }
 
         [Required(ErrorMessage = "Полето {0} е задължително!")]
+        [Range(0.01, 2000, ErrorMessage = "Стойността за {0} трябва да бъде между {1} ​​и {2}.")]
         [Display(Name = "Дължина")]
         public double Length { get; set; }
 
         [Required(ErrorMessage = "Полето {0} е задължително!")]
+        [Range(0.01, 2000, ErrorMessage = "Стойността за {0} трябва да бъде между {1} ​​и {2}.")]
         [Display(Name = "Височина")]
         public double Height { get; set; }
 
@@ -55,6 +59,7 @@ namespace ThreeDimensionalWorld.Models
         public bool IsActive { get; set; }
 
         [ForeignKey("CategoryId")]
+        [Display(Name = "Категория")]
         public Category? Category { get; set; }
 
         public IEnumerable<ProductFile> Files { get; set; } = new List<ProductFile>();

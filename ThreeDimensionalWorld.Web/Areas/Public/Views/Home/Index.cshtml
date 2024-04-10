@@ -1,0 +1,105 @@
+﻿@using ThreeDimensionalWorld.Models
+@using ThreeDimensionalWorld.Utility
+@{
+    ViewData["Title"] = "Начало";
+    List<Category> categories = (List<Category>)ViewData["Categories"]!;
+    List<Product> products = (List<Product>)ViewData["Products"]!;
+    Material defaultMaterial = (Material)ViewData["DefaultMaterial"]!;
+    MaterialColor defaultMaterialColor = defaultMaterial.Colors.FirstOrDefault()!;
+}
+
+<div class="text-center">
+
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <h1>Триизмерен свят</h1>
+        <hr class="w-100" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <p style="text-align: justify">
+                Добре дошли в Триизмерен свят - онлайн дестинацията, където съвременното изкуство на 3D принтирането среща вълнуващия свят на иновациите. В нашия виртуален магазин ви предлагаме широка гама от продукти, превърнали се в реалност благодарение на прогреса на технологията. От уникални дизайни до персонализирани предмети - ние вярваме, че всеки може да открие нещо вълнуващо и вдъхновяващо в нашия Триизмерен свят.
+                С нашата страст към иновациите и качеството на продуктите, сме посветени на предоставяне на нашите клиенти най-доброто от вълшебството на 3D принтирането.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-6">
+
+        @if(categories.Count == 3)
+        {
+            <div class="row h-100 justify-content-center align-items-center">
+                @foreach (var item in categories)
+                {
+                    <div class="col-md-4">
+                        <a class="text-decoration-none" style="color: inherit" asp-controller="Products" asp-action="Index" asp-route-categoryId="@item.Id">
+                            <div class="category-card" style="background-image: url('/images/@item.Image');">
+                                <h1>@item.Name</h1>
+                            </div>
+                        </a>
+                    </div>
+                }
+                <div class="w-100 d-flex align-items-center justify-content-center mt-2">
+                    <a asp-controller="Categories" asp-action="Index" class="btn btn-lg btn-outline-info">Покажи повече категории</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                <a asp-controller="Categories" asp-action="Index" class="btn btn-lg btn-outline-info">Към категории</a>
+            </div>
+        }
+        
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6 order-md-2">
+        <p style="text-align: justify">
+            Независимо дали сте търсещи подарък с персонален привкус или желаете да обогатите своя дом или офис с уникални и креативни предмети, Триизмерен свят е тук, за да ви предложи вълшебство, което можете да докоснете.
+            От естетични изделия до функционални предмети, нашата селекция от продукти е разнообразна и вдъхновяваща. Позволете ни да ви покажем нови начини за изразяване на индивидуалността си и да ви въведем във вълнуващия свят на 3D принтирането.
+            Разгледайте нашата колекция сега и се потопете в Триизмерен свят - мястото, където въображението става реалност!
+        </p>
+    </div>
+    <div class="col-md-6">
+        <div class="row h-100 justify-content-center align-items-center">
+            @if (products.Count == 3)
+            {
+                @foreach (var item in products)
+                {
+                    ProductFile productFile = item.Files.ToList().FirstOrDefault(f => AllowedFormats.Allowed3dFormats.Contains(System.IO.Path.GetExtension(f.Name)))!;
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card larger-on-hover">
+                            <div class="card-3d-holder">
+                                <div class="stl-container" data-3d-src="/3dModels/@productFile!.Name" style="width: 100%; aspect-ratio: 3/2;" data-3d-color="@defaultMaterialColor.ColorCode"></div>
+                            </div>
+                            <div class="card-body text-center">
+                                <p class="card-title">@item.Title</p>
+
+                                <div class="pb-2">
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Повече</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="w-100 d-flex align-items-center justify-content-center">
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-lg btn-outline-info">Покажи повече продукти</a>
+                </div>
+            }
+            else
+            {
+                <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-lg btn-outline-info">Към продукти</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/stlDisplay.js"></script>
+}

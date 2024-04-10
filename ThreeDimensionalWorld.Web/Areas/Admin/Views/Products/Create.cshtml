@@ -1,0 +1,140 @@
+﻿@using ThreeDimensionalWorld.Models
+@using System.Globalization
+@using ThreeDimensionalWorld.Utility
+
+
+@model ThreeDimensionalWorld.Models.Product
+
+@{
+    ViewData["Title"] = "Създай";
+
+    string displaySlideShow = "display: none";
+    if (Model != null && Model.Files != null)
+    {
+        displaySlideShow = "display: block;";
+    }
+}
+
+<h1>Създай</h1>
+
+<h4>Продукт</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BasePrice" class="control-label"></label>
+                <input asp-for="BasePrice" class="form-control" />
+                <span asp-validation-for="BasePrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Width" class="control-label"></label>
+                <input asp-for="Width" class="form-control" />
+                <span asp-validation-for="Width" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Length" class="control-label"></label>
+                <input asp-for="Length" class="form-control" />
+                <span asp-validation-for="Length" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Height" class="control-label"></label>
+                <input asp-for="Height" class="form-control" />
+                <span asp-validation-for="Height" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AttributionLink" class="control-label"></label>
+                <input asp-for="AttributionLink" class="form-control" />
+                <span asp-validation-for="AttributionLink" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IsActive" class="control-label"></label>
+                <input asp-for="IsActive" type="checkbox" value="true" checked="checked" />
+                <span asp-validation-for="IsActive" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input class="form-control" name="files" type="file" multiple id="files-input" accept="@string.Join(",", AllowedFormats.AllAllowedFormats)" />
+            </div>
+
+            <div class="slideshow" style="width: 100%; aspect-ratio: 2/1;@displaySlideShow " >
+            <!-- Slideshow container -->
+                <div class="slideshow-container">
+                    @if (Model != null && Model.Files != null)
+                    {
+                        foreach (ProductFile item in Model.Files)
+                        {
+                            if (AllowedFormats.Allowed3dFormats.Contains(System.IO.Path.GetExtension(item.Name).ToLower()))
+                            {
+                                <div class="slideshow-slides fade-slideshow">
+                                    <div class="stl-container" data-3d-src="/3dModels/@item.Name" style="width: 100%"></div>
+                                </div>
+                            }
+                            else if (AllowedFormats.AllowedImageFormats.Contains(System.IO.Path.GetExtension(item.Name).ToLower()))
+                            {
+                                <div class="slideshow-slides fade-slideshow">
+                                    <img src="~/images/@item.Name" style="width:100%">
+                                </div>
+                            }
+                        }
+                    }
+                    <!-- Next and previous buttons -->
+                  <a class="slideshow-btn-prev">&#10094;</a>
+                  <a class="slideshow-btn-next">&#10095;</a>
+                </div>
+                <br>
+
+                <!-- The dots/circles -->
+                <div class="slideshow-dots-container" style="text-align:center">
+                    @if (Model != null && Model.Files != null)
+                    {
+                        foreach (ProductFile item in Model.Files)
+                        {
+                            if (AllowedFormats.AllAllowedFormats.Contains(System.IO.Path.GetExtension(item.Name).ToLower()))
+                            {
+                                <span class="slideshow-dot"></span>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Добави" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Към списъка</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/stlDisplay.js"></script>
+    <script src="~/js/slideshows.js"></script>
+    <script src="~/js/slideshowInput.js"></script>
+}

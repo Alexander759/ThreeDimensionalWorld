@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ThreeDimensionalWorld.Models
+@using ThreeDimensionalWorld.Web.RolesAndUsersConfiguration
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.FindByNameAsync(User.Identity?.Name!);
+
+    @if (User.IsInRole(AppRolesAndUsersConfiguration.CustomerRole))
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCarts" asp-action="Index">
+                <i class="bi bi-cart2"></i>
+            </a>
+        </li>
+    }
+    <li class="nav-item">
+        <a  class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Здравейте @user?.FirstName!</a>
+    </li>
+    <li class="nav-item">
+        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button  type="submit" class="nav-link btn btn-link">Изход</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Регистрация</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Вход</a>
+    </li>
+}
+</ul>

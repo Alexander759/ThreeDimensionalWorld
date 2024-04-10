@@ -219,9 +219,11 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -354,14 +356,11 @@ namespace ThreeDimensionalWorld.DataAccess.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfReceiving")
+                    b.Property<DateTime>("DateOfSending")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOrdered")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsReceived")
-                        .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");

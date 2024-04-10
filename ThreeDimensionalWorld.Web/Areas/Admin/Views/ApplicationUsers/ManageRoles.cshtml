@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ThreeDimensionalWorld.Models
+@using ThreeDimensionalWorld.Web.RolesAndUsersConfiguration
+@model ThreeDimensionalWorld.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Детайли";
+    Dictionary<IdentityRole, string> dictionary = (Dictionary<IdentityRole, string>)ViewData["RolesDictionary"]!;
+    UserManager<ApplicationUser> userManager = (UserManager<ApplicationUser>)ViewData["userManager"]!;
+}
+
+<h1>Роли</h1>
+
+<div>
+    <h4>Потребител</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Потребителско име
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            Имейл
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            Телефонен номер
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+    </dl>
+</div>
+
+@if(Model.UserName != AppRolesAndUsersConfiguration.DefaultAdminUsername)
+{
+    <form asp-action="ManageRoles" method="post">
+        <input name="id" value="@Model.Id" hidden />
+        @foreach(var keyValuePair in dictionary)
+        {
+            <div>
+                @if(await userManager.IsInRoleAsync(Model, keyValuePair.Key.Name!))
+                {
+                    <input name="roleNames" type="checkbox" value="@keyValuePair.Key.Name" checked />
+                }
+                else
+                {
+                    <input name="roleNames" type="checkbox" value="@keyValuePair.Key.Name" />
+                }
+
+                <label>@keyValuePair.Value</label>
+            </div>
+        }
+
+        <input class="btn btn-primary" type="submit" value="Запази" />
+    </form>
+}
+<div>
+    <a asp-action="Index">Към листа</a>
+</div>

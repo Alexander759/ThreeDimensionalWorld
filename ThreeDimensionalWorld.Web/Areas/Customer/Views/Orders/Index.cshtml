@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ThreeDimensionalWorld.Models.Order>
+
+@{
+    ViewData["Title"] = "Поръчки";
+}
+
+<h1>Поръчки</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddressId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOrdered)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfSending)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @item.Address?.Street, @item.Address?.PopulatedPlace, @item.Address?.Country
+            </td>
+            <td>
+                <span hidden>@item.DateOrdered.ToString("yyyyMMdd")</span>
+                @item.DateOrdered.ToString("d.M.yyyy")
+            </td>
+            <td>
+                <span hidden>@item.DateOfSending.ToString("yyyyMMdd")</span>
+                @item.DateOfSending.ToString("d.M.yyyy")
+            </td>
+            <td>
+                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id"><i class="bi bi-search"></i> Детайли</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/datatables.js"></script>
+}

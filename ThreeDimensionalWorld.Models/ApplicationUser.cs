@@ -10,16 +10,17 @@ namespace ThreeDimensionalWorld.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        //[Required(ErrorMessage = "Полето {0} е задължително!")]
+        [Required(ErrorMessage = "Полето {0} е задължително!")]
         [Display(Name = "Първо име")]
         [PersonalData]
-        public string? FirstName { get; set; }
+        public required string FirstName { get; set; }
 
-        //[Required(ErrorMessage = "Полето {0} е задължително!")]
+        [Required(ErrorMessage = "Полето {0} е задължително!")]
         [Display(Name = "Фамилно име")]
         [PersonalData]
-        public string? LastName { get; set; }
+        public required string LastName { get; set; }
 
+        [Display(Name = "Пълно име")]
         [NotMapped]
         public string FullName { get => $"{FirstName} {LastName}"; }
 

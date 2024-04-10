@@ -1,0 +1,106 @@
+﻿@using ThreeDimensionalWorld.Models
+@using ThreeDimensionalWorld.Utility
+@model ThreeDimensionalWorld.Models.Order
+
+@{
+    ViewData["Title"] = "Изтрий";
+}
+
+<h1>Изтрий</h1>
+
+<h3>Сигурни ли сте, че искате да изтриете тази поръчка?</h3>
+<div>
+    <h4>Поръчка</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AddressId)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Address?.Street, @Model.Address?.PopulatedPlace, @Model.Address?.Country
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateOrdered)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateOrdered)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateOfSending)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateOfSending)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PriceForDelivery)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PriceForDelivery)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SessionId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SessionId)
+        </dd>
+        <dt class="col-sm-2">
+            Имейл
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser!.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ApplicationUser!.FullName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ApplicationUser!.FullName)
+        </dd>
+    </dl>
+
+    <div class="container mt-5 ">
+        <div class="row">
+            @foreach (var item in Model.OrderItems)
+            {
+                ProductFile productFile = item.Product!.Files.ToList().FirstOrDefault(f => AllowedFormats.AllAllowedFormats.Contains(System.IO.Path.GetExtension(f.Name).ToLower()))!;
+
+                <div class="col-md-4 mb-4 card-holder">
+                    <div class="card">
+                        <div class="card-3d-holder">
+                            <div class="stl-container"
+                                 data-3d-src="/3dModels/@productFile!.Name"
+                                 style="width: 100%; aspect-ratio: 3/2;"
+                                 data-3d-color="@item.Color!.ColorCode"></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <h5 class="card-title">@item.Product.Title</h5>
+                                <h6 class="card-subtitle price-item">@String.Format("{0:C}", item.TotalPrice)</h6>
+                            </div>
+
+                            <p class="mt-2">
+                                Цена за единица: @String.Format("{0:C}", item.PricePerUnit)
+                                <br />
+                                Количество: @item.Quantity
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="submit" value="Изтрий" class="btn btn-danger" /> |
+        <a asp-action="Index">Към списъка</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/stlDisplay.js"></script>
+}
